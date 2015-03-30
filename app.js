@@ -15,7 +15,7 @@ app.get("/", function (req, res) {
 });
 
 app.all('/*', function (req, res) {
-    res.send("<img src='/public/images/404_leo.jpg' />", 404);
+    res.status(404).send("<img src='/public/images/404_leo.jpg' />");
 });
 
 io.sockets.on('connection', function (socket) {

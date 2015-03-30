@@ -1,0 +1,11 @@
+﻿.avatar {
+    height: 50px;
+    width: 50px;
+    float: left;
+    margin: 0px 10px 5px 0px;
+}
+
+.endmessage {
+    clear: both;
+    margin-bottom: 0px;
+}

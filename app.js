@@ -7,6 +7,10 @@ var index = fs.readFileSync('index.html');
 
 var app = express();
 
+// Define static folders
+app.use('/' , express.static(__dirname, '/public'));
+
+
 app.get("/", function(req, res) {
 	res.end(index);
 });
@@ -18,6 +22,5 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.emit('message', data);
 	})
 });
-
 
 app.listen(3131);

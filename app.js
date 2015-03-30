@@ -12,8 +12,12 @@ app.get("/", function(req, res) {
 });
 
 io.sockets.on('connection', function (socket) {
-	socket.emit("message", {username : "Moobot", message : '<img id="iii" src="http://static2.businessinsider.com/image/509802cb69bedd6209000009/nicolas-cage-will-be-in-the-expendables-3.jpg"></img>'});
+	//socket.emit("message", {username : "Moobot", message : '<img id="iii" src="http://static2.businessinsider.com/image/509802cb69bedd6209000009/nicolas-cage-will-be-in-the-expendables-3.jpg"></img>'});
 	socket.on('message', function(data) {
+		if(data.avatar == null) {
+			data.avatar = "http://static2.businessinsider.com/image/509802cb69bedd6209000009/nicolas-cage-will-be-in-the-expendables-3.jpg";
+		}
+
 		socket.emit('message', data);
 		socket.broadcast.emit('message', data);
 	})

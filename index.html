@@ -26,10 +26,11 @@
 	<input type="textbox" id="message">
 	<button type="button" onclick="send()">Send</button>
 	<button type="button" onclick="setAvatar()">Change avatar</button>
+	<button type="button" onclick="setUsername()">Change username</button>
 
 	<script src="http://10.17.245.232:3132/socket.io/socket.io.js"></script>
 	<script type="text/javascript">
-		var username = setUsername();
+		setUsername();
 		var avatar = 'http://static2.businessinsider.com/image/509802cb69bedd6209000009/nicolas-cage-will-be-in-the-expendables-3.jpg';
 
 		var socket = io.connect('http://10.17.245.232:3132');
@@ -56,7 +57,7 @@
 		function setAvatar() {
 			avat = prompt("Enter your avatar's url :");
 
-			if (avat == '') {
+			if (isEmptyOrSpaces(avat)) {
 				avatar = 'http://static2.businessinsider.com/image/509802cb69bedd6209000009/nicolas-cage-will-be-in-the-expendables-3.jpg';
 			} 
 			else {
@@ -67,12 +68,16 @@
 		function setUsername() {
 			usern = prompt("Enter your username :");
 
-			if (usern == '') {
-				return 'I suck';
+			if (isEmptyOrSpaces(usern)) {
+				username = 'I suck';
 			} 
 			else {
-				return usern;
+				username = usern;
 			}
+		}
+
+		function isEmptyOrSpaces(str){
+		    return str === null || str.match(/^ *$/) !== null;
 		}
 	</script>
 </body>

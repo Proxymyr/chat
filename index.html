@@ -1,91 +1,89 @@
 <!doctype html>
 <html>
 <head>
-	<title>Nicochat Cage!</title>
-	<style type="text/css">
-		#id {
-			height: 80%;
-			overflow: scroll;
-		}
+    <title>Nicochat Cage!</title>
+    <style type="text/css">
+        .avatar {
+            height: 50px;
+            width: 50px;
+            float: left;
+            margin: 0px 10px 5px 0px;
+        }
 
-		.avatar {
-		    height: 50px;
-		    width: 50px;
-		    float: left;
-		    margin: 0px 10px 0px 0px;
-		}
-
-		.endmessage {
-		    clear: both;
-		    margin-top: 20px;
-		}
-	</style>
+        .endmessage {
+            clear: both;
+            margin-bottom: 0px;
+        }
+    </style>
 </head>
 <body>
-	<form>
-	<input type="textbox" id="message">
-	<button type="submit" id="submit" onclick="send()">Send</button>
-	</form>
-	<button type="button" onclick="setAvatar()">Change avatar</button>
-	<button type="button" onclick="setUsername()">Change username</button>
-	<div id="chat">
-	</div>
+    <form>
+        <input type="textbox" id="message">
+        <button type="submit" id="submit" onclick="send()">Send</button>
+    </form>
+    <button type="button" onclick="setAvatar()">Change avatar</button>
+    <button type="button" onclick="setUsername()">Change username</button>
+    <div id="chat">
+    </div>
 
-	<script src="http://10.17.245.232:3132/socket.io/socket.io.js"></script>
-	<script type="text/javascript">
-		setUsername();
-		var avatar = 'http://static2.businessinsider.com/image/509802cb69bedd6209000009/nicolas-cage-will-be-in-the-expendables-3.jpg';
+    <script src="http://192.168.0.15:3132/socket.io/socket.io.js"></script>
+    <script type="text/javascript">
+        setUsername();
+        var avatar = 'http://static2.businessinsider.com/image/509802cb69bedd6209000009/nicolas-cage-will-be-in-the-expendables-3.jpg';
 
-		document.getElementById("submit").addEventListener("click", function(event){
-			event.preventDefault()
-		});
+        document.getElementById("submit").addEventListener("click", function (event) {
+            event.preventDefault()
+        });
 
-		var socket = io.connect('http://10.17.245.232:3132');
-		socket.on('message', function (data) {
-    		document.getElementById("chat").innerHTML = constructMessage(data.avatar, data.username, data.message) + document.getElementById("chat").innerHTML;
-		});
+        var socket = io.connect('http://192.168.0.15:3132');
+        socket.on('message', function (data) {
+            document.getElementById("chat").innerHTML = constructMessage(data.avatar, data.username, data.message) + document.getElementById("chat").innerHTML;
+        });
 
-		function send() {
-			socket.emit('message', {'username' : username, 'avatar' : avatar, 'message' : document.getElementById("message").value});
-			document.getElementById("message").value = "";
-		}
+        function send() {
+            document.getElementById('submit').disabled = true;
+            setTimeout(function () { document.getElementById('submit').disabled = false; }, 500);
 
-		function constructMessage(avatar, username, content) {
-			var html = '';
-			html += '<br />';
-			html += '<div><a href=\'' + avatar + '\' target="_blank" ><img class=\'avatar\' src=\'' + avatar + '\'/></a></div>';
-			html += '<div><b>' + username + '</b><br />';
-			html += content + '</div></div>';
-			html += '<hr class=\'endmessage\'/>';
+            socket.emit('message', { 'username': username, 'avatar': avatar, 'message': document.getElementById("message").value });
+            document.getElementById("message").value = "";
+        }
 
-			return html;
-		}
+        function constructMessage(avatar, username, content) {
+            var html = '';
+            html += '<br />';
+            html += '<div><a href=\'' + avatar + '\' target="_blank" ><img class=\'avatar\' src=\'' + avatar + '\'/></a></div>';
+            html += '<div><b>' + username + '</b><br />';
+            html += content + '</div></div>';
+            html += '<hr class=\'endmessage\'/>';
 
-		function setAvatar() {
-			avat = prompt("Enter your avatar's url :");
+            return html;
+        }
 
-			if (isEmptyOrSpaces(avat)) {
-				avatar = 'http://static2.businessinsider.com/image/509802cb69bedd6209000009/nicolas-cage-will-be-in-the-expendables-3.jpg';
-			} 
-			else {
-				avatar = avat;
-			}
-		}
+        function setAvatar() {
+            avat = prompt("Enter your avatar's url :");
 
-		function setUsername() {
-			usern = prompt("Enter your username :");
+            if (isEmptyOrSpaces(avat)) {
+                avatar = 'http://static2.businessinsider.com/image/509802cb69bedd6209000009/nicolas-cage-will-be-in-the-expendables-3.jpg';
+            }
+            else {
+                avatar = avat;
+            }
+        }
 
-			if (isEmptyOrSpaces(usern)) {
-				username = 'I suck';
-			} 
-			else {
-				username = usern;
-			}
-		}
+        function setUsername() {
+            usern = prompt("Enter your username :");
 
-		function isEmptyOrSpaces(str){
-		    return str === null || str.match(/^ *$/) !== null;
-		}
-	</script>
+            if (isEmptyOrSpaces(usern)) {
+                username = 'I suck';
+            }
+            else {
+                username = usern;
+            }
+        }
+
+        function isEmptyOrSpaces(str) {
+            return str === null || str.match(/^ *$/) !== null;
+        }
+    </script>
 </body>
 </html>

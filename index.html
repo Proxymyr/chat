@@ -21,21 +21,30 @@
 	</style>
 </head>
 <body>
+	<form>
+	<input type="textbox" id="message">
+	<button type="submit" id="submit" onclick="send()">Send</button>
+	</form>
+	<button type="button" onclick="setAvatar()">Change avatar</button>
+<<<<<<< HEAD
+	<button type="button" onclick="setUsername()">Change username</button>
+=======
 	<div id="chat">
 	</div>
-	<input type="textbox" id="message">
-	<button type="button" onclick="send()">Send</button>
-	<button type="button" onclick="setAvatar()">Change avatar</button>
-	<button type="button" onclick="setUsername()">Change username</button>
+>>>>>>> origin/master
 
 	<script src="http://10.17.245.232:3132/socket.io/socket.io.js"></script>
 	<script type="text/javascript">
 		setUsername();
 		var avatar = 'http://static2.businessinsider.com/image/509802cb69bedd6209000009/nicolas-cage-will-be-in-the-expendables-3.jpg';
 
+		document.getElementById("submit").addEventListener("click", function(event){
+			event.preventDefault()
+		});
+
 		var socket = io.connect('http://10.17.245.232:3132');
 		socket.on('message', function (data) {
-    		document.getElementById("chat").innerHTML += constructMessage(data.avatar, data.username, data.message);
+    		document.getElementById("chat").innerHTML = constructMessage(data.avatar, data.username, data.message) + document.getElementById("chat").innerHTML;
 		});
 
 		function send() {

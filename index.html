@@ -25,10 +25,12 @@
 	</div>
 	<input type="textbox" id="message">
 	<button type="button" onclick="send()">Send</button>
+	<button type="button" onclick="setAvatar()">Change avatar</button>
 
 	<script src="http://10.17.245.232:3132/socket.io/socket.io.js"></script>
 	<script type="text/javascript">
-		var username = prompt("Username : ");
+		var username = setUsername();
+		var avatar = 'http://static2.businessinsider.com/image/509802cb69bedd6209000009/nicolas-cage-will-be-in-the-expendables-3.jpg';
 
 		var socket = io.connect('http://10.17.245.232:3132');
 		socket.on('message', function (data) {
@@ -36,19 +38,41 @@
 		});
 
 		function send() {
-			socket.emit('message', {'username' : username, 'message' : document.getElementById("message").value});
+			socket.emit('message', {'username' : username, 'avatar' : avatar, 'message' : document.getElementById("message").value});
 			document.getElementById("message").value = "";
 		}
 
 		function constructMessage(avatar, username, content) {
 			var html = '';
 			html += '<br />';
-			html += '<div><img class=\'avatar\' src=' + avatar + '\'/></div>';
+			html += '<div><img class=\'avatar\' src=\'' + avatar + '\'/></div>';
 			html += '<div><b>' + username + '</b><br />';
 			html += content + '</div></div>';
 			html += '<hr class=\'endmessage\'/>';
 
 			return html;
+		}
+
+		function setAvatar() {
+			avat = prompt("Enter your avatar's url :");
+
+			if (avat == '') {
+				avatar = 'http://static2.businessinsider.com/image/509802cb69bedd6209000009/nicolas-cage-will-be-in-the-expendables-3.jpg';
+			} 
+			else {
+				avatar = avat;
+			}
+		}
+
+		function setUsername() {
+			usern = prompt("Enter your username :");
+
+			if (usern == '') {
+				return 'I suck';
+			} 
+			else {
+				return usern;
+			}
 		}
 	</script>
 </body>

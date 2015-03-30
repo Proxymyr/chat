@@ -10,17 +10,20 @@ var app = express();
 // Define static folders
 app.use('/' , express.static(__dirname, '/public'));
 
+app.get("/", function (req, res) {
+    res.end(index);
+});
 
-app.get("/", function(req, res) {
-	res.end(index);
+app.all('/*', function (req, res) {
+    res.send("<img src='/public/images/404_leo.jpg' />", 404);
 });
 
 io.sockets.on('connection', function (socket) {
-	//socket.emit("message", {username : "Moobot", message : '<img id="iii" src="http://static2.businessinsider.com/image/509802cb69bedd6209000009/nicolas-cage-will-be-in-the-expendables-3.jpg"></img>'});
-	socket.on('message', function(data) {
-		socket.emit('message', data);
-		socket.broadcast.emit('message', data);
-	})
+    //socket.emit("message", {username : "Moobot", message : '<img id="iii" src="/public/images/nico_yds.jpg"></img>'});
+    socket.on('message', function (data) {
+        socket.emit('message', data);
+        socket.broadcast.emit('message', data);
+    })
 });
 
 app.listen(3131);

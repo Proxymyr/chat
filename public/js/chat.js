@@ -1,5 +1,5 @@
 ﻿var username = '';
-var avatar = 'http://static2.businessinsider.com/image/509802cb69bedd6209000009/nicolas-cage-will-be-in-the-expendables-3.jpg';
+var avatar = '/public/images/nico_yds.jpg';
 
 setUsername();
 
@@ -31,7 +31,7 @@ function setAvatar() {
     avat = prompt("Enter your avatar's url :");
     
     if (isEmptyOrSpaces(avat)) {
-        avatar = 'http://static2.businessinsider.com/image/509802cb69bedd6209000009/nicolas-cage-will-be-in-the-expendables-3.jpg';
+        avatar = '/public/images/nico_yds.jpg';
     }
     else {
         avatar = avat;

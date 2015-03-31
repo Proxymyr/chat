@@ -3,7 +3,7 @@ var fs = require("fs");
 var path = require('path');
 var express = require("express");
 
-var port = process.argv[3];
+var port = parseInt(process.argv[3]);
 var io = require("socket.io").listen(port+1);
 
 var app = express();
@@ -17,7 +17,7 @@ app.set('view engine', 'jade');
 app.use('/', express.static(__dirname, '/public'));
 
 app.get("/", function (req, res) {
-    res.render('index', {ip : addr, port : port});
+    res.render('index', {ip : addr, port : port+1});
 });
 
 app.get('/nsa', function (req, res) {

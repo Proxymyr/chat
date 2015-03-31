@@ -21,7 +21,7 @@ app.get("/", function (req, res) {
 });
 
 app.get('/nsa', function (req, res) {
-    res.render('nsa');
+    res.render('nsa', {ip : addr, port : port+1});
 });
 
 app.all('/*', function (req, res) {

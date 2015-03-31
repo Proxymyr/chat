@@ -65,7 +65,7 @@ function setUsername() {
             username = usern;
         }
         else {
-            alert("Wrong password bitch!");
+            alert("Wrong password biyotch!");
             setUsername();
         }
     }

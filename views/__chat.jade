@@ -1,14 +1,10 @@
-﻿#chatContainer
-    form
-        input#message(type='textbox')
-        |         
-        button#submit(type='submit', onclick='send()') Send
-    |     
-    button(type='button', onclick='setAvatar()') Change avatar
-    |     
-    button(type='button', onclick='setUsername()') Change username
-    |
-    #chat
+#chatContainer
+  form
+      input#message(type='textbox')
+      button#submit(type='submit', onclick='send()') Send
+  button(type='button', onclick='setAvatar()') Change avatar
+  button(type='button', onclick='setUsername()') Change username
+  #chat
 
 link(rel='stylesheet', type='text/css', href='public/css/chat.css')
 script(src='http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js')

@@ -1,4 +1,11 @@
-﻿var username = '';
+﻿// Add startsWith(str) to string
+if (typeof String.prototype.startsWith != 'function') {
+    String.prototype.startsWith = function (str) {
+        return this.substring(0, str.length) === str;
+    }
+};
+
+var username = '';
 var avatar = '/public/images/nico_yds.jpg';
 if(localStorage.getItem("avatar") != null) {
     avatar = localStorage.getItem("avatar");
@@ -31,7 +38,14 @@ socket.on('sysmessage', function (data) {
 
 function send() {
     var time = Date.now();
-    var data = { 'username': username, 'avatar': avatar, 'message': document.getElementById("message").value, 'time' : time };
+    var content = document.getElementById("message").value;
+
+    if (content.startsWith("http://www.reactiongifs.com/r/")) {
+        content = ".reac." + content.substr("http://www.reactiongifs.com/r/".length, content.length);
+        console.log(content);
+    }
+
+    var data = { 'username': username, 'avatar': avatar, 'message': content, 'time' : time };
     sendMessage(data);
     document.getElementById("message").value = "";
 

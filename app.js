@@ -14,13 +14,11 @@ app.set('view engine', 'jade');
 app.use('/', express.static(__dirname, '/public'));
 
 app.get("/", function (req, res) {
-   // res.end(index);
     res.render('index');
 });
 
 app.get('/nsa', function (req, res) {
-    res.setHeader('Content-type', 'text/html');
-    res.end(nsa);
+    res.render('nsa');
 });
 
 app.all('/*', function (req, res) {

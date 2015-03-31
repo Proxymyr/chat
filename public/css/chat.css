@@ -19,6 +19,11 @@
     display: inline-block;
 }
 
+.sysMessageContent {
+     display: inline-block;
+     font-size: 13px;
+}
+
 .endmessage {
     margin-bottom: 0px;
 }

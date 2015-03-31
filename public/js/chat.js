@@ -13,8 +13,16 @@ else {
 
 var socket = io.connect('http://'+ip+':'+port);
 
+socket.on('conn', function() {
+    socket.emit('conn', username);
+})
+
 socket.on('message', function (data) {
-    document.getElementById("chat").innerHTML = constructMessage(data.avatar, data.username, data.message, data.time) + document.getElementById("chat").innerHTML;
+    document.getElementById("chat").innerHTML = constructMessage(data.avatar, data.username, data.message, data.time) + document.getElementById("chat").innerHTML
+});
+
+socket.on('sysmessage', function (data) {
+    document.getElementById("chat").innerHTML = sysMessage(data) + document.getElementById("chat").innerHTML;
 });
 
 function send() {
@@ -41,6 +49,20 @@ function constructMessage(avatar, username, content, time) {
     html += '<div><b class=\'pseudo\'>' + username + '</b>  ';
     html += '<span class=\'messageTime\'>' + (date.getHours() < 10 ? '0' : '') + date.getHours() + 'h' + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() + '</span><br />';
     html += '<span class=\'messageContent\' >' + content + '</span></div></div>';
+    html += '</div>'
+    html += '<hr class=\'endmessage\'/>';
+
+    return html;
+}
+
+function sysMessage(data) {
+    var date = new Date(Date.now());
+
+    var html = '';
+    html += '<br />';
+    html += '<div>';
+    html += '<span class=\'sysMessageContent\'>' + (date.getHours() < 10 ? '0' : '') + date.getHours() + 'h' + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() + ' : ';
+    html += data.username + ' entered the chat</span></div></div>';
     html += '</div>'
     html += '<hr class=\'endmessage\'/>';
 

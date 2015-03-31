@@ -29,9 +29,17 @@ app.all('/*', function (req, res) {
 });
 
 io.sockets.on('connection', function (socket) {
+	socket.emit('conn');
     socket.on('message', function (data) {
         socket.emit('message', data);
         socket.broadcast.emit('message', data);
+    })
+    socket.on('conn', function(username) {
+    	var data = {
+    		type: "connexion",
+    		username: username
+    	}
+    	socket.emit('sysmessage', data);
     })
 });
 

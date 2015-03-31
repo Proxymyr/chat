@@ -6,8 +6,8 @@
     height: 30vh;
 }
 
-#frame {
+#chat {
     height: 65vh;
     width: 100%;
-    border: none;
+    text-align: left;
 }

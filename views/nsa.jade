@@ -5,15 +5,14 @@ html
     |     
     meta(charset='utf-8')
   body
-    h1 Ready to get some freedom ?
+    h1 Ready to send some FREEDOM ?
     |     
     img#nsaImage(src='/public/images/nsa.jpg')
     br
     |     
     button(type='button', onclick='sendFreedom()') SEND FREEDOM !! MURICA !
-    br
-    |  
-    include __chat.jade
+    div#chat  
+      include __chat.jade
 
     script(src='public/js/nsa.js')
     link(rel='stylesheet', type='text/css', href='/public/css/nsa.css')

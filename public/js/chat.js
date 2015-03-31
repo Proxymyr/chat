@@ -48,7 +48,16 @@ function constructMessage(avatar, username, content, time) {
     if(content == "/lenny") {
         content = "( ͡° ͜ʖ ͡°)";
     }
-
+    
+    var splitted = content.split("#");
+    console.log(splitted[1]);
+    switch (splitted[1]) {
+        case "reaction":
+            console.log(splitted[2]);
+            content = "<img src='http://www.reactiongifs.com/" + splitted[2] + "' />"
+            break;
+    }
+    console.log(content);
     var html = '';
     html += '<br />';
     html += '<div>';

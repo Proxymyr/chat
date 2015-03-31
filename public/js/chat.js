@@ -11,7 +11,7 @@ else {
     setUsername();
 }
 
-var socket = io.connect('http://10.17.17.159:4142');
+var socket = io.connect('http://'+ip+':'+port);
 
 socket.on('message', function (data) {
     document.getElementById("chat").innerHTML = constructMessage(data.avatar, data.username, data.message, data.time) + document.getElementById("chat").innerHTML;

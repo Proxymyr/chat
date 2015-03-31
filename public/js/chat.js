@@ -49,10 +49,10 @@ function constructMessage(avatar, username, content, time) {
         content = "( ͡° ͜ʖ ͡°)";
     }
     
-    var splitted = content.split("#");
+    var splitted = content.split(".");
     switch (splitted[1]) {
-        case "reaction":
-            content = "<img src='http://www.reactiongifs.com/" + splitted[2] + "' />"
+        case "reac":
+            content = "<img src='http://www.reactiongifs.com/r/" + splitted[2] + ".gif' />"
             break;
     }
     var html = '';

@@ -1,9 +1,18 @@
 ﻿var username = '';
 var avatar = '/public/images/nico_yds.jpg';
+if(localStorage.getItem("avatar") != null) {
+    avatar = localStorage.getItem("avatar");
+}
 
-setUsername();
+if(localStorage.getItem("username") != null) {
+    username = localStorage.getItem("username");
+}
+else {
+    setUsername();
+}
 
-var socket = io.connect('http://192.168.0.15:3132');
+
+var socket = io.connect('http://localhost:3132');
 socket.on('message', function (data) {
     document.getElementById("chat").innerHTML = constructMessage(data.avatar, data.username, data.message) + document.getElementById("chat").innerHTML;
 });
@@ -35,17 +44,29 @@ function setAvatar() {
     }
     else {
         avatar = avat;
+        localStorage.setItem("avatar", avat);
     }
 }
 
 function setUsername() {
     usern = prompt("Enter your username :");
     
-    if (isEmptyOrSpaces(usern)) {
-        username = 'I suck';
+    if(usern === "Poxymyr" || usern === "Vega"){
+        passwd = prompt("This username is reserved ;) \n enter the password :");
+        if(CryptoJS.MD5(passwd) === "e86eb3868e5cb0e27f4822d1b30213e1"){
+            username = usern;
+        }
+        else {
+            alert("Wrong password bitch!");
+            setUsername();
+        }
+    }
+    else if (!isEmptyOrSpaces(usern)) {
+        username = usern;
+        localStorage.setItem("username", usern);
     }
     else {
-        username = usern;
+        username = 'I suck';
     }
 }
 

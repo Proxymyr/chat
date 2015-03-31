@@ -1,7 +1,7 @@
 ﻿#chatContainer
-    form
+    form(onsubmit='send();return false;')
         input#message(type='textbox')        
-        button#submit(type='submit', onclick='send()') Send    
+        button#submit(type='submit') Send    
     button(type='button', onclick='setAvatar()') Change avatar    
     button(type='button', onclick='setUsername()') Change username
     #chat

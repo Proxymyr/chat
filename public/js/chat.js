@@ -60,8 +60,8 @@ function setUsername() {
     usern = prompt("Enter your username :");
     
     if(usern === "Poxymyr" || usern === "Vega"){
-        passwd = prompt("This username is reserved ;) \n enter the password :");
-        if(CryptoJS.MD5(passwd) === "e86eb3868e5cb0e27f4822d1b30213e1"){
+        passwd = prompt("This username is reserved ;) \nEnter the password :");
+        if(CryptoJS.MD5(passwd) == "e86eb3868e5cb0e27f4822d1b30213e1"){
             username = usern;
         }
         else {

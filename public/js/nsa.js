@@ -7,3 +7,13 @@
         sendMessage(data);
     }
 }
+
+function feelFreedom() {
+    if (username == 'Vega' || username == 'Poxymyr') {
+        var freedom = "<img src='http://www.reactiongifs.com/r/freedom.gif'/>";
+        
+        var time = Date.now();
+        var data = { 'username': 'MURICA', 'avatar': 'http://fc04.deviantart.net/fs70/f/2012/134/d/7/profile_picture_by_freedomeagleplz-d4zr8rl.jpg', 'message': freedom, 'time' : time };
+        sendMessage(data);
+    }
+}

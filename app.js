@@ -1,18 +1,24 @@
 var http = require("http");
 var fs = require("fs");
+var path = require('path');
 var express = require("express");
 var io = require("socket.io").listen(4142);
 
+var app = express();
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+
 var index = fs.readFileSync('./views/index.html');
 var nsa = fs.readFileSync('./views/nsa.html');
-
-var app = express();
 
 // Define static folders
 app.use('/', express.static(__dirname, '/public'));
 
 app.get("/", function (req, res) {
-    res.end(index);
+   // res.end(index);
+    res.render('index');
 });
 
 app.get('/nsa', function (req, res) {

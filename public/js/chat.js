@@ -11,7 +11,7 @@ else {
     setUsername();
 }
 
-var socket = io.connect('http://localhost:3132');
+var socket = io.connect('http://10.17.17.159:4142');
 
 socket.on('message', function (data) {
     document.getElementById("chat").innerHTML = constructMessage(data.avatar, data.username, data.message, data.time) + document.getElementById("chat").innerHTML;
@@ -20,12 +20,15 @@ socket.on('message', function (data) {
 function send() {
     var time = Date.now();
     var data = { 'username': username, 'avatar': avatar, 'message': document.getElementById("message").value, 'time' : time };
+    sendMessage(data);
+    document.getElementById("message").value = "";
 
     document.getElementById('submit').disabled = true;
     setTimeout(function () { document.getElementById('submit').disabled = false; }, 500);
+}
 
+function sendMessage(data) {
     socket.emit('message', data);
-    document.getElementById("message").value = "";
 }
 
 function constructMessage(avatar, username, content, time) {
@@ -36,7 +39,7 @@ function constructMessage(avatar, username, content, time) {
     html += '<div>';
     html += '<a href=\'' + avatar + '\' target="_blank" ><img class=\'avatar\' src=\'' + avatar + '\'/></a>';
     html += '<div><b class=\'pseudo\'>' + username + '</b>  ';
-    html += '<span class=\'messageTime\'>' + date.getHours() + 'h' + date.getMinutes() + '</span><br />';
+    html += '<span class=\'messageTime\'>' + (date.getHours() < 10 ? '0' : '') + date.getHours() + 'h' + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() + '</span><br />';
     html += '<span class=\'messageContent\' >' + content + '</span></div></div>';
     html += '</div>'
     html += '<hr class=\'endmessage\'/>';

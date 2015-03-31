@@ -18,6 +18,10 @@ socket.on('conn', function() {
 })
 
 socket.on('message', function (data) {
+    if(data.message == "/nsa") {
+        sendFreedom(data.username);
+        return;
+    }
     document.getElementById("chat").innerHTML = constructMessage(data.avatar, data.username, data.message, data.time) + document.getElementById("chat").innerHTML
 });
 

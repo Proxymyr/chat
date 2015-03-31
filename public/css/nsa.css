@@ -1,0 +1,13 @@
+﻿body {
+    text-align: center;
+}
+
+#nsaImage {
+    height: 30vh;
+}
+
+#frame {
+    height: 65vh;
+    width: 100%;
+    border: none;
+}

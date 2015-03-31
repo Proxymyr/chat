@@ -45,6 +45,8 @@ function sendMessage(data) {
 
 function constructMessage(avatar, username, content, time) {
     var date = new Date(time);
+    if(content == "/lenny")
+        content = "( ͡° ͜ʖ ͡°)";
 
     var html = '';
     html += '<br />';

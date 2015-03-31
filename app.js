@@ -2,16 +2,13 @@ var http = require("http");
 var fs = require("fs");
 var path = require('path');
 var express = require("express");
-var io = require("socket.io").listen(3132);
+var io = require("socket.io").listen(4142);
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
-var index = fs.readFileSync('./views/index.html');
-var nsa = fs.readFileSync('./views/nsa.html');
 
 // Define static folders
 app.use('/', express.static(__dirname, '/public'));
@@ -37,4 +34,4 @@ io.sockets.on('connection', function (socket) {
     })
 });
 
-app.listen(3131);
+app.listen(4141);

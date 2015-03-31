@@ -3,7 +3,7 @@ var avatar = '/public/images/nico_yds.jpg';
 
 setUsername();
 
-var socket = io.connect('http://10.17.245.232:3132');
+var socket = io.connect('http://localhost:4142');
 socket.on('message', function (data) {
     document.getElementById("chat").innerHTML = constructMessage(data.avatar, data.username, data.message, data.time) + document.getElementById("chat").innerHTML;
 });

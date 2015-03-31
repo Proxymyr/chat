@@ -1,17 +1,23 @@
 var http = require("http");
 var fs = require("fs");
 var express = require("express");
-var io = require("socket.io").listen(3132);
+var io = require("socket.io").listen(4142);
 
-var index = fs.readFileSync('index.html');
+var index = fs.readFileSync('./views/index.html');
+var nsa = fs.readFileSync('./views/nsa.html');
 
 var app = express();
 
 // Define static folders
-app.use('/' , express.static(__dirname, '/public'));
+app.use('/', express.static(__dirname, '/public'));
 
 app.get("/", function (req, res) {
     res.end(index);
+});
+
+app.get('/nsa', function (req, res) {
+    res.setHeader('Content-type', 'text/html');
+    res.end(nsa);
 });
 
 app.all('/*', function (req, res) {
@@ -25,4 +31,4 @@ io.sockets.on('connection', function (socket) {
     })
 });
 
-app.listen(3131);
+app.listen(4141);

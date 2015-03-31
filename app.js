@@ -40,6 +40,7 @@ io.sockets.on('connection', function (socket) {
     		username: username
     	}
     	socket.emit('sysmessage', data);
+    	socket.broadcast.emit('sysmessage', data);
     })
 });
 

@@ -6,7 +6,11 @@
     height: 30vh;
 }
 
+<<<<<<< HEAD
 #chatContainer {
+=======
+#chat {
+>>>>>>> 51ed9ce1f6189919b6c278c227a62e25ab685136
     height: 65vh;
     width: 100%;
     text-align: left;

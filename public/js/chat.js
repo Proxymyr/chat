@@ -63,6 +63,7 @@ function setUsername() {
         passwd = prompt("This username is reserved ;) \nEnter the password :");
         if(CryptoJS.MD5(passwd) == "e86eb3868e5cb0e27f4822d1b30213e1"){
             username = usern;
+            localStorage.setItem("username", usern);
         }
         else {
             alert("Wrong password biyotch!");

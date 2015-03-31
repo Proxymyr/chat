@@ -19,7 +19,6 @@ app.all('/*', function (req, res) {
 });
 
 io.sockets.on('connection', function (socket) {
-    //socket.emit("message", {username : "Moobot", message : '<img id="iii" src="/public/images/nico_yds.jpg"></img>'});
     socket.on('message', function (data) {
         socket.emit('message', data);
         socket.broadcast.emit('message', data);

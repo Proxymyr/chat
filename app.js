@@ -2,9 +2,12 @@ var http = require("http");
 var fs = require("fs");
 var path = require('path');
 var express = require("express");
-var io = require("socket.io").listen(4142);
+
+var port = process.argv[3];
+var io = require("socket.io").listen(port+1);
 
 var app = express();
+var addr = process.argv[2];
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -14,7 +17,7 @@ app.set('view engine', 'jade');
 app.use('/', express.static(__dirname, '/public'));
 
 app.get("/", function (req, res) {
-    res.render('index');
+    res.render('index', {ip : addr, port : port});
 });
 
 app.get('/nsa', function (req, res) {
@@ -32,4 +35,4 @@ io.sockets.on('connection', function (socket) {
     })
 });
 
-app.listen(4141);
+app.listen(port);

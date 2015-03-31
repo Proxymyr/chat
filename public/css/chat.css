@@ -5,7 +5,20 @@
     margin: 0px 10px 5px 0px;
 }
 
+.pseudo {
+    clear: left;
+    font-size: 18px;
+}
+
+.messageTime {
+    font-style: normal;
+    font-size: 14px;
+}
+
+.messageContent {
+    display: inline-block;
+}
+
 .endmessage {
-    clear: both;
     margin-bottom: 0px;
 }

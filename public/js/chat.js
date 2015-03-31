@@ -11,28 +11,36 @@ else {
     setUsername();
 }
 
-
 var socket = io.connect('http://localhost:3132');
+
 socket.on('message', function (data) {
-    document.getElementById("chat").innerHTML = constructMessage(data.avatar, data.username, data.message) + document.getElementById("chat").innerHTML;
+    document.getElementById("chat").innerHTML = constructMessage(data.avatar, data.username, data.message, data.time) + document.getElementById("chat").innerHTML;
 });
 
 function send() {
+    var time = Date.now();
+    var data = { 'username': username, 'avatar': avatar, 'message': document.getElementById("message").value, 'time' : time };
+
     document.getElementById('submit').disabled = true;
     setTimeout(function () { document.getElementById('submit').disabled = false; }, 500);
-    
-    socket.emit('message', { 'username': username, 'avatar': avatar, 'message': document.getElementById("message").value });
+
+    socket.emit('message', data);
     document.getElementById("message").value = "";
 }
 
-function constructMessage(avatar, username, content) {
+function constructMessage(avatar, username, content, time) {
+    var date = new Date(time);
+
     var html = '';
     html += '<br />';
-    html += '<div><a href=\'' + avatar + '\' target="_blank" ><img class=\'avatar\' src=\'' + avatar + '\'/></a></div>';
-    html += '<div><b>' + username + '</b><br />';
-    html += content + '</div></div>';
+    html += '<div>';
+    html += '<a href=\'' + avatar + '\' target="_blank" ><img class=\'avatar\' src=\'' + avatar + '\'/></a>';
+    html += '<div><b class=\'pseudo\'>' + username + '</b>  ';
+    html += '<span class=\'messageTime\'>' + date.getHours() + 'h' + date.getMinutes() + '</span><br />';
+    html += '<span class=\'messageContent\' >' + content + '</span></div></div>';
+    html += '</div>'
     html += '<hr class=\'endmessage\'/>';
-    
+
     return html;
 }
 

@@ -9,4 +9,6 @@
 link(rel='stylesheet', type='text/css', href='public/css/chat.css')
 script(src='http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js')
 script(src='http://#{ip}:#{port}/socket.io/socket.io.js')
+script.
+    var ip = "#{ip}", port = #{port};
 script(src='public/js/chat.js')

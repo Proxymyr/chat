@@ -2,7 +2,7 @@ var http = require("http");
 var fs = require("fs");
 var path = require('path');
 var express = require("express");
-var io = require("socket.io").listen(4142);
+var io = require("socket.io").listen(3132);
 
 var app = express();
 
@@ -37,4 +37,4 @@ io.sockets.on('connection', function (socket) {
     })
 });
 
-app.listen(4141);
+app.listen(3131);

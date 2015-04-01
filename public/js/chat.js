@@ -18,7 +18,7 @@ else {
     setUsername();
 }
 
-var socket = io.connect('http://'+ip+':'+port);
+var socket = io.connect(location.host);
 
 socket.on('conn', function() {
     socket.emit('conn', username);

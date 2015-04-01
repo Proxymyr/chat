@@ -23,8 +23,9 @@ app.get('/nsa', function (req, res) {
     res.render('nsa');
 });
 
-app.all('/*', function (req, res) {
-    res.status(404).send("<img src='/public/images/404_leo.jpg' />");
+// This handler is a catch-all for 404s
+app.use(function (req, res) {
+    res.status(404).sendFile(__dirname + "/public/images/404_leo.jpg");
 });
 
 io.sockets.on('connection', function (socket) {

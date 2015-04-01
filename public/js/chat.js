@@ -108,33 +108,15 @@
 //    }
 //}
 
-//function setUsername() {
-//    usern = prompt("Enter your username :");
-    
-//    if(usern === "Poxymyr" || usern === "Vega"){
-//        passwd = prompt("This username is reserved ;) \nEnter the password :");
-//        if(CryptoJS.MD5(passwd) == "e86eb3868e5cb0e27f4822d1b30213e1"){
-//            username = usern;
-//            localStorage.setItem("username", usern);
-//        }
-//        else {
-//            alert("Wrong password biyotch!");
-//            setUsername();
-//        }
-//    }
-//    else if (!isEmptyOrSpaces(usern)) {
-//        username = usern;
-//        localStorage.setItem("username", usern);
-//    }
-//    else {
-//        username = 'I suck';
-//    }
-//}
+// Add isEmptyOrSpaces function to String
+if (typeof String.prototype.isEmptyOrSpaces != 'function') {
+    String.prototype.isEmptyOrSpaces = function () {
+        return this === null || this.match(/^ *$/) !== null;
+    }
+}
 
-//function isEmptyOrSpaces(str) {
-//    return str === null || str.match(/^ *$/) !== null;
-//}
-
+var username = 'I suck';
+var avatar = '/public/images/nico_yds.jpg';
 var socket = io.connect('http://' + ip + ':' + port);
 
 connect();
@@ -144,4 +126,43 @@ function connect () {
     var avatar = prompt("Enter your avatar's url", "/public/images/nico_yds.jpg");
 
     socket.emit('newUser', { 'username': username, 'avatar': avatar } );
+}
+
+function setUsername() {
+    var newUsername = prompt("Enter your username :", username);
+
+    if(newUsername === "Poxymyr" || newUsername === "Vega"){
+        passwd = prompt("This username is reserved ;) \nEnter the password :", "012345");
+        if(CryptoJS.MD5(passwd) == "e86eb3868e5cb0e27f4822d1b30213e1"){
+            username = newUsername;
+            localStorage.setItem("username", newUsername);
+        }
+        else {
+            alert("Wrong password biyotch!");
+            setUsername();
+        }
+    }
+    else if (newUsername.isEmptyOrSpaces()) {
+        username = newUsername;
+        localStorage.setItem("username", newUsername);
+    }
+    else {
+        username = 'I suck';
+    }
+
+    socket.emit('setUsername', username);
+}
+
+function setAvatar() {
+    var newAvatar = prompt("Enter your avatar's url :");
+
+    if (isEmptyOrSpaces(newAvatar)) {
+        avatar = '/public/images/nico_yds.jpg';
+    }
+    else {
+        avatar = newAvatar;
+        localStorage.setItem("avatar", newAvatar);
+
+        socket.emit('setAvatar', newAvatar);
+    }
 }

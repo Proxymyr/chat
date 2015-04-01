@@ -31,14 +31,37 @@ app.all('/*', function (req, res) {
 });
 
 io.sockets.on('connection', function (socket, client) {
+
+    // Store socket id
     var id = socket.id;
+    
+    // User first connection
     socket.on('newUser', function (data) {
-        console.log(id);
-        users.push({ 'id': id, 'username': data.username, 'avatar': data.avatar});
-        console.log(users);
+        
+        // Store user data
+        users.push({ 'id': id, 'username': data.username, 'avatar': data.avatar });
+        
+        // Alert all user of the new user
         socket.emit('userConn');
         socket.broadcast.emit('userConn');
     });
+
+    socket.on('setUsername', function (newUsername) {
+        var user = getUserBySocketId(id);
+        
+        if (user != null) {
+            user.username = newUsername;
+        }
+    });
+
+    socket.on('setAvatar', function (newAvatar) {
+        var user = getUserBySocketId(id);
+        
+        if (user != null) {
+            user.avatar = newAvatar;
+        }
+    });
+
  //socket.emit('conn');
  //   socket.on('message', function (data) {
  //       socket.emit('message', data);
@@ -55,3 +78,12 @@ io.sockets.on('connection', function (socket, client) {
 });
 
 app.listen(port);
+
+function getUserBySocketId(id) {
+    return users.filter(function (value) {
+        if (value.id === id) {
+            console.log(value);
+            return value;
+        }
+    });
+}

@@ -66,7 +66,7 @@ function constructMessage(avatar, username, content, time) {
     var splitted = content.split(".");
     switch (splitted[1]) {
         case "reac":
-            content = "<img src='http://www.reactiongifs.com/" + splitted[2] + ".gif' />"
+            content = "<a href='http://www.reactiongifs.com/" + splitted[2] + ".gif' target='_blank'><img src='http://www.reactiongifs.com/" + splitted[2] + ".gif' /><a/>"
             break;
     }
     var html = '';

@@ -18,7 +18,7 @@ else {
     setUsername();
 }
 
-var socket = io.connect('http://'+ip+':'+port);
+var socket = io.connect(location.host);
 
 socket.on('conn', function() {
     socket.emit('conn', username);
@@ -62,7 +62,7 @@ function constructMessage(avatar, username, content, time) {
     if(content == "/lenny") {
         content = "( ͡° ͜ʖ ͡°)";
     }
-    
+
     var splitted = content.split(".");
     switch (splitted[1]) {
         case "reac":
@@ -98,7 +98,7 @@ function sysMessage(data) {
 
 function setAvatar() {
     avat = prompt("Enter your avatar's url :");
-    
+
     if (isEmptyOrSpaces(avat)) {
         avatar = '/public/images/nico_yds.jpg';
     }
@@ -110,7 +110,7 @@ function setAvatar() {
 
 function setUsername() {
     usern = prompt("Enter your username :");
-    
+
     if(usern === "Poxymyr" || usern === "Vega"){
         passwd = prompt("This username is reserved ;) \nEnter the password :");
         if(CryptoJS.MD5(passwd) == "e86eb3868e5cb0e27f4822d1b30213e1"){

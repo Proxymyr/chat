@@ -72,14 +72,15 @@ function constructMessage(avatar, username, content, time) {
     var html = '';
     html += '<br />';
     html += '<div>';
-    html += '<a href=\'' + avatar + '\' target="_blank" ><img class=\'avatar\' src=\'' + avatar + '\'/></a>';
+    html += '<a href=\'' + avatar + '\' target="_blank" ><img style="float: left" class=\'avatar\' src=\'' + avatar + '\'/></a>';
     html += '<div><b class=\'pseudo\'>' + username + '</b>  ';
     html += '<span class=\'messageTime\'>' + (date.getHours() < 10 ? '0' : '') + date.getHours() + 'h' + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() + '</span><br />';
-    html += '<span class=\'messageContent\' >' + content + '</span></div></div>';
+    html += '<div><span class=\'messageContent\' >' + content + '</span> <span style="float: right"> <img src=/public/images/delete.jpg width="25px" height="25px" onclick="EraseMessage(this)"></img> </span> </div> </div> </div>';
     html += '</div>'
     html += '<hr class=\'endmessage\'/>';
 
     return html;
+    
 }
 
 function sysMessage(data) {
@@ -133,4 +134,16 @@ function setUsername() {
 
 function isEmptyOrSpaces(str) {
     return str === null || str.match(/^ *$/) !== null;
+}
+
+function EraseMessage(context) {
+    var user = username;
+    var divnumber = context.parentElement.parentElement;
+    
+    
+
+    var html = '';
+    html += '<div> <span class=\'messageContent\' ><dfn>"Message Deleted"</dfn></span> </div>';
+    divnumber.innerHTML = html;
+     
 }

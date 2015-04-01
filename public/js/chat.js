@@ -40,8 +40,8 @@ function send() {
     var time = Date.now();
     var content = document.getElementById("message").value;
 
-    if (content.startsWith("http://www.reactiongifs.com/r/")) {
-        content = ".reac." + content.substr("http://www.reactiongifs.com/r/".length, content.length);
+    if (content.startsWith("http://www.reactiongifs.com/")) {
+        content = ".reac." + content.substr("http://www.reactiongifs.com/".length, content.length);
         console.log(content);
     }
 
@@ -66,7 +66,7 @@ function constructMessage(avatar, username, content, time) {
     var splitted = content.split(".");
     switch (splitted[1]) {
         case "reac":
-            content = "<img src='http://www.reactiongifs.com/r/" + splitted[2] + ".gif' />"
+            content = "<img src='http://www.reactiongifs.com/" + splitted[2] + ".gif' />"
             break;
     }
     var html = '';

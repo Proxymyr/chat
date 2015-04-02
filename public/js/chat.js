@@ -71,7 +71,7 @@ function setUsername() {
             setUsername();
         }
     }
-
+    
     setUserData(newUsername, avatar);
 }
 
@@ -180,7 +180,9 @@ function displayMessage(user, message) {
     }
     
     
-    /* 
+    /* GENERATED HTML SCHEMA
+     * (need to make a template)
+     * 
      * <br />
      * <div>
      *   <a><img src='avatar' /></a>  
@@ -188,8 +190,10 @@ function displayMessage(user, message) {
      *     <b>Pseudo</b>
      *     <span>20h00</span>
      *     <br />
-     *     <span>Content</span>
-     *     <span>EraseButton</span>
+     *     <div>
+     *       <span>Content</span>
+     *       <span>EraseButton</span>
+     *     </div>
      *   </div>
      * </div>
      * <hr />

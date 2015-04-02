@@ -7,10 +7,12 @@ var http = require("http");
 var path = require('path');
 var express = require("express");
 var bodyParser = require("body-parser");
-var io = require("socket.io").listen(http);
+
+var port = parseInt(process.argv[2]) || 3131;
 
 var app = express();
-var port = parseInt(process.argv[2]) || 3131;
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 var users = new Array();
 

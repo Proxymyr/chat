@@ -71,6 +71,8 @@ function setUsername() {
             setUsername();
         }
     }
+
+    setUserData(newUsername, avatar);
 }
 
 
@@ -173,19 +175,35 @@ function displayMessage(user, message) {
     var splitted = message.content.split(".");
     switch (splitted[1]) {
         case "reac":
-            message.content = "<a href='http://www.reactiongifs.com/" + splitted[2] + ".gif' target='_blank'><img src='http://www.reactiongifs.com/" + splitted[2] + ".gif' /><a/>"
+            message.content = "<a href='http://www.reactiongifs.com/" + splitted[2] + ".gif' target='_blank'><img src='http://www.reactiongifs.com/" + splitted[2] + ".gif' /></a>"
             break;
     }
+    
+    
+    /* 
+     * <br />
+     * <div>
+     *   <a><img src='avatar' /></a>  
+     *   <div>
+     *     <b>Pseudo</b>
+     *     <span>20h00</span>
+     *     <br />
+     *     <span>Content</span>
+     *     <span>EraseButton</span>
+     *   </div>
+     * </div>
+     * <hr />
+     */
     
     var html = '';
     html += '<br />';
     html += '<div>';
-    html += '<a href=\'' + avatar + '\' target="_blank" ><img class=\'avatar\' src=\'' + avatar + '\'/></a>';
-    html += '<div><b class=\'pseudo\'>' + username + '</b>  ';
+    html += '<a href=\'' + user.avatar + '\' target="_blank" ><img class=\'avatar\' src=\'' + user.avatar + '\'/></a>';
+    html += '<div><b class=\'pseudo\'>' + user.username + '</b> ';
     html += '<span class=\'messageTime\'>' + (date.getHours() < 10 ? '0' : '') + date.getHours() + 'h' + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() + '</span><br />';
-    html += '<span class=\'messageContent\' >' + content + '</span>';
-    html += '<span style="float: right"><img src=/public/images/delete.jpg width="25px" height="25px" onclick="EraseMessage(this)"></img></span></div></div></div>';
-    html += '</div>'
+    html += '<div><span class=\'messageContent\' >' + message.content + '</span>';
+    html += '<span style="float: right"><img src=/public/images/delete.jpg width="25px" height="25px" onclick="eraseMessage(this)"></img></span></div>';
+    html += '</div></div>'
     html += '<hr class=\'endmessage\'/>';
     
     document.getElementById("chat").innerHTML = html + document.getElementById("chat").innerHTML;
@@ -242,10 +260,7 @@ function displayUsernameChange(user, time) {
 
 // Remove message's content
 function eraseMessage(context) {
-    var user = username;
     var divnumber = context.parentElement.parentElement;
-    
-    var html = '';
-    html += '<div> <span class=\'messageContent\'><dfn>"Message Deleted"</dfn></span></div>';
+    var html = '<div><span class=\'messageContent\'><dfn>"Message Deleted"</dfn></span></div>';
     divnumber.innerHTML = html;
 }

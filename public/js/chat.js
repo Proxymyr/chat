@@ -22,7 +22,7 @@ if (typeof String.prototype.isEmptyOrWhitespace != 'function') {
 //=======================================
 
 // Connect to server's socket
-var socket = io.connect('http://' + ip + ':' + port);
+var socket = io.connect(location.host);
 
 // Get username and avatar
 var username = 'I suck';
@@ -31,7 +31,7 @@ var avatar = '/public/images/nico_yds.jpg';
 if (localStorage.getItem("avatar") != null && localStorage.getItem("username") != null) {
     username = localStorage.getItem("username");
     avatar = localStorage.getItem("avatar");
-
+    
     socket.emit('userConnect', { 'username': username, 'avatar': avatar });
 }
 else {
@@ -71,9 +71,8 @@ function setUsername() {
             setUsername();
         }
     }
-    
-    setUserData(newUsername, avatar);
 }
+
 
 // Change user's avatar
 function setAvatar() {
@@ -93,7 +92,7 @@ function setUserData(newUsername, newAvatar) {
         if (this.status >= 200 && this.status < 400) {
             username = JSON.parse(this.response).newUsername;
             avatar = JSON.parse(this.response).newAvatar;
-
+            
             localStorage.setItem("username", username);
             localStorage.setItem("avatar", avatar);
         } else {
@@ -160,7 +159,7 @@ function sendMessage(data) {
 }
 
 //=============================
-//====== Message Handling =====
+//===== Message Handling ======
 //=============================
 
 // Display a message
@@ -177,14 +176,15 @@ function displayMessage(user, message) {
             message.content = "<a href='http://www.reactiongifs.com/" + splitted[2] + ".gif' target='_blank'><img src='http://www.reactiongifs.com/" + splitted[2] + ".gif' /><a/>"
             break;
     }
-
+    
     var html = '';
     html += '<br />';
     html += '<div>';
-    html += '<a href=\'' + user.avatar + '\' target="_blank" ><img class=\'avatar\' src=\'' + user.avatar + '\'/></a>';
-    html += '<div><b class=\'pseudo\'>' + user.username + '</b>  ';
+    html += '<a href=\'' + avatar + '\' target="_blank" ><img class=\'avatar\' src=\'' + avatar + '\'/></a>';
+    html += '<div><b class=\'pseudo\'>' + username + '</b>  ';
     html += '<span class=\'messageTime\'>' + (date.getHours() < 10 ? '0' : '') + date.getHours() + 'h' + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() + '</span><br />';
-    html += '<span class=\'messageContent\' >' + message.content + '</span></div></div>';
+    html += '<span class=\'messageContent\' >' + content + '</span>';
+    html += '<span style="float: right"><img src=/public/images/delete.jpg width="25px" height="25px" onclick="EraseMessage(this)"></img></span></div></div></div>';
     html += '</div>'
     html += '<hr class=\'endmessage\'/>';
     
@@ -229,9 +229,23 @@ function displayUsernameChange(user, time) {
     html += '<br />';
     html += '<div>';
     html += '<span class=\'sysMessageContent\'>' + (date.getHours() < 10 ? '0' : '') + date.getHours() + 'h' + (date.getMinutes() < 10 ? '0' : '') + date.getMinutes() + ' : ';
-    html += '<b>' + user.oldUsername + '</b>\'s name changed to <b>'+ user.newUsername +'</b></span></div></div>';
+    html += '<b>' + user.oldUsername + '</b>\'s name changed to <b>' + user.newUsername + '</b></span></div></div>';
     html += '</div>'
     html += '<hr class=\'endmessage\'/>';
     
     document.getElementById("chat").innerHTML = html + document.getElementById("chat").innerHTML;
+}
+
+//=============================
+//====== Chat Commands ========
+//=============================
+
+// Remove message's content
+function eraseMessage(context) {
+    var user = username;
+    var divnumber = context.parentElement.parentElement;
+    
+    var html = '';
+    html += '<div> <span class=\'messageContent\'><dfn>"Message Deleted"</dfn></span></div>';
+    divnumber.innerHTML = html;
 }

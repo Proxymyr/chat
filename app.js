@@ -1,18 +1,16 @@
-//============================
-//====== Server Setup ========
-//============================
-
-var addr = process.argv[2];
-var port = parseInt(process.argv[3]);
+//=============================
+//======= Server Setup ========
+//=============================
 
 var fs = require("fs");
 var http = require("http");
 var path = require('path');
 var express = require("express");
 var bodyParser = require("body-parser");
-var io = require("socket.io").listen(port + 1);
+var io = require("socket.io").listen(http);
 
 var app = express();
+var port = parseInt(process.argv[2]) || 3131;
 
 var users = new Array();
 
@@ -29,11 +27,11 @@ app.use(bodyParser.json({ extended: true }));
 //=============================
 
 app.get("/", function (req, res) {
-    res.render('index', { ip : addr, port : port + 1 });
+    res.render('index');
 });
 
 app.get('/nsa', function (req, res) {
-    res.render('nsa', { ip : addr, port : port + 1 });
+    res.render('nsa');
 });
 
 app.put('/api/user/:username', function (req, res) {
@@ -75,7 +73,7 @@ app.put('/api/user/:username', function (req, res) {
 });
 
 app.all('/*', function (req, res) {
-    res.status(404).send("<img src='/public/images/404_leo.jpg' />");
+    res.status(404).sendFile(__dirname + "/public/images/404_leo.jpg");
 });
 
 //=============================
@@ -141,9 +139,11 @@ function getUserByPropertyValue(propertyName, value) {
     return users.filter(function (value) {
         if (value[propertyName] === value[propertyName]) {
             return value;
-        }
-    });
+    	}
+});
 }
 
-// Start server
-app.listen(port);
+//Start server
+http.listen(port, function() {
+    console.log('Listening on %s', port);
+});

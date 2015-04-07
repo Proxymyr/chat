@@ -46,10 +46,6 @@ Temporary Items
 # Node.js commons
 # ========================
 
-# Logs
-logs
-*.log
-
 # Runtime data
 pids
 *.pid

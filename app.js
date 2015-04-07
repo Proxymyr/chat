@@ -7,6 +7,10 @@ var express = require("express");
 var socket = require("socket.io");
 var bodyParser = require("body-parser");
 
+//loggers files
+var morgan = require("morgan");
+var logger = require("./logger");
+
 // Get port
 var port = parseInt(process.argv[2]) || 3131;
 
@@ -65,6 +69,14 @@ app.put('/api/user/:username', function (req, res) {
 	}
 });
 
+logger.debug("Overriding 'Express' logger");
+app.use(morgan("default", { "stream": logger.stream }));
+
+// no stacktraces leaked to user
+app.use(function(err, req, res) {
+    logger.error('error %s', err.message);
+});
+
 // This handler is a catch-all for 404 errors
 app.use(function (req, res) {
 	res.status(404).sendFile(__dirname + "/public/images/404_leo.jpg");
@@ -108,7 +120,9 @@ io.sockets.on('connection', function (socket) {
 	socket.on('userMessage', function (messageData) {
 		
 		var user = getUserByPropertyValue('socket', socketId)[0];
-		
+
+        logger.info('message %s', messageData);
+
 		// Send message to all users
 		if (typeof user != 'undefined') {
 			messageData = { 'type': 'userMessage', 'user': { 'username': messageData.username, 'avatar': messageData.avatar }, 'message': { 'content': messageData.content, 'time': messageData.time } };

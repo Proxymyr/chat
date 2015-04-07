@@ -6,6 +6,7 @@
 //    document.getElementById("chat").innerHTML = constructMessage(data.avatar, data.username, data.message, data.time) + document.getElementById("chat").innerHTML
 //});
 
+
 //=============================
 //===== Helpers Functions =====
 //=============================

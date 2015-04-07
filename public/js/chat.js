@@ -29,8 +29,10 @@ socket.on('message', function (data) {
         sendFreedom(data.username);
         return;
     }
-    document.getElementById("chat").innerHTML = constructMessage(data.avatar, data.username, data.message, data.time) + document.getElementById("chat").innerHTML
+    document.getElementById("chat").innerHTML += constructMessage(data.avatar, data.username, data.message, data.time);
 });
+
+    document.getElementById("chat").style.height = window.innerHeight*0.99-60 + "px";
 
 socket.on('sysmessage', function (data) {
     document.getElementById("chat").innerHTML = sysMessage(data) + document.getElementById("chat").innerHTML;

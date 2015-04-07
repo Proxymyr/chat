@@ -1,11 +1,11 @@
 //=============================
 //======= Server Setup ========
 //=============================
-
 var fs = require("fs");
 var path = require('path');
 var express = require("express");
 var socket = require("socket.io");
+var bodyParser = require("body-parser");
 
 // Get port
 var port = parseInt(process.argv[2]) || 3131;

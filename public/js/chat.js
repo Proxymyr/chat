@@ -114,7 +114,6 @@ socket.on('message', function (message) {
 			break;
 
 		case 'userDisconnection':
-			console.log('test');
 			displayDisconnection(message.user, message.time);
 			break;
 

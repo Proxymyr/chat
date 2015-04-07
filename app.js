@@ -7,7 +7,7 @@ var express = require("express");
 var socket = require("socket.io");
 var bodyParser = require("body-parser");
 
-//loggers files
+// Loggers files
 var morgan = require("morgan");
 var logger = require("./logger");
 
@@ -72,7 +72,7 @@ app.put('/api/user/:username', function (req, res) {
 logger.debug("Overriding 'Express' logger");
 app.use(morgan("default", { "stream": logger.stream }));
 
-// no stacktraces leaked to user
+// Avoid leaking stacktrace to user
 app.use(function(err, req, res) {
     logger.error('error %s', err.message);
 });
@@ -156,13 +156,13 @@ function checkUserConnection(user, request, response) {
 // Check the user's name and avatar
 function checkUserData(request, response) {
 	// Empty username
-	if (request.body.username.isEmptyOrWhitespace()) {
+	if (typeof request.body.username == 'undefined' || request.body.username.isEmptyOrWhitespace()) {
 		response.writeHead(400, { 'Content-type': 'application/json' });
 		response.end(JSON.stringify({ 'errors': ['Can\'t use an empty username'] }));
 		return false;
 	}
     // Empty avatar
-	else if (request.body.avatar.isEmptyOrWhitespace()) {
+	else if (typeof request.body.avatar == 'undefined' || request.body.avatar.isEmptyOrWhitespace()) {
 		response.writeHead(400, { 'Content-type': 'application/json' });
 		response.end(JSON.stringify({ 'errors': ['Can\'t use an empty avatar'] }));
 		return false;

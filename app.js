@@ -12,7 +12,7 @@ var morgan = require("morgan");
 var logger = require("./logger");
 
 // Get port
-var port = parseInt(process.argv[2]) || 3131;
+var port = parseInt(process.argv[2]) || 4141;
 
 // Start server
 var app = express();

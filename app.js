@@ -127,7 +127,7 @@ io.sockets.on('connection', function (socket) {
 
 		// Send message to all users
 		if (typeof user != 'undefined') {
-			messageData = { 'type': 'userMessage', 'user': { 'username': messageData.username, 'avatar': messageData.avatar }, 'message': { 'content': HTMLToPlainText(messageData.content), 'time': messageData.time } };
+			messageData = { 'type': 'userMessage', 'user': { 'username': messageData.username, 'avatar': HTMLToPlainText(messageData.avatar) }, 'message': { 'content': HTMLToPlainText(messageData.content), 'time': messageData.time } };
 			io.sockets.emit('message', messageData);
 		}
 	});

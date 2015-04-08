@@ -6,6 +6,7 @@ var path = require('path');
 var express = require("express");
 var socket = require("socket.io");
 var bodyParser = require("body-parser");
+var entities = require("entities");
 
 // Loggers files
 var morgan = require("morgan");
@@ -76,7 +77,7 @@ app.use(morgan("default", { "stream": logger.stream }));
 
 // Avoid leaking stacktrace to user
 app.use(function(err, req, res) {
-    logger.error('error %s', err.message);
+	logger.error('error %s', err.message);
 });
 
 // This handler is a catch-all for 404 errors
@@ -95,9 +96,12 @@ io.sockets.on('connection', function (socket) {
 		
 		// Store user data
 		users.push({ 'ip': ip, 'socket': socketId, 'username': data.username, 'avatar': data.avatar });
-		
+
+		data.username = entities.encodeHTML(data.username);
+		data.avatar = entities.encodeHTML(data.avatar);
+
 		// Alert all users of the connection
-		connData = { 'type': 'userConnection', 'user': { 'username': HTMLToPlainText(data.username), 'avatar': data.avatar }, 'time': Date.now() };
+		connData = { 'type': 'userConnection', 'user': { 'username': data.username, 'avatar': data.avatar }, 'time': Date.now() };
 		io.sockets.emit('message', connData);
 	});
 	
@@ -111,7 +115,10 @@ io.sockets.on('connection', function (socket) {
 			var oldAvatar = user.avatar;
 			
 			users.splice(users.indexOf(user), 1);
-			
+
+			oldUsername = entities.encodeHTML(oldUsername);
+			oldAvatar = entities.encodeHTML(oldAvatar);
+
 			// Alert all users of the disconnection
 			disconnData = { 'type': 'userDisconnection', 'user': { 'username': oldUsername, 'avatar': oldAvatar }, 'time': Date.now() };
 			socket.broadcast.emit('message', disconnData);
@@ -123,11 +130,16 @@ io.sockets.on('connection', function (socket) {
 		
 		var user = getUserByPropertyValue('socket', socketId)[0];
 
-        logger.info('message %s', messageData);
+		logger.info('message %s', messageData);
+
+		messageData.username = entities.encodeHTML(messageData.username);
+		messageData.avatar = entities.encodeHTML(messageData.avatar);
+		messageData.content = entities.encodeHTML(messageData.content);
+		messageData.time = new Date(messageData.time);
 
 		// Send message to all users
 		if (typeof user != 'undefined') {
-			messageData = { 'type': 'userMessage', 'user': { 'username': HTMLToPlainText(messageData.username), 'avatar': HTMLToPlainText(messageData.avatar) }, 'message': { 'content': HTMLToPlainText(messageData.content), 'time': messageData.time } };
+			messageData = { 'type': 'userMessage', 'user': { 'username': messageData.username, 'avatar': messageData.avatar }, 'message': { 'content': messageData.content, 'time': messageData.time } };
 			io.sockets.emit('message', messageData);
 		}
 	});
@@ -145,7 +157,7 @@ function checkUserConnection(user, request, response) {
 		response.end(JSON.stringify({ 'errors': ['Username not found'] }));
 		return false;
 	}
-    // Sender ip is not user's ip
+	// Sender ip is not user's ip
 	else if (user.ip != request.connection.remoteAddress) {
 		response.writeHead(403, { 'Content-type': 'application/json' });
 		response.end(JSON.stringify({ 'errors': ['No rights to change user\'s data'] }));
@@ -163,7 +175,7 @@ function checkUserData(request, response) {
 		response.end(JSON.stringify({ 'errors': ['Can\'t use an empty username'] }));
 		return false;
 	}
-    // Empty avatar
+	// Empty avatar
 	else if (typeof request.body.avatar == 'undefined' || request.body.avatar.isEmptyOrWhitespace()) {
 		response.writeHead(400, { 'Content-type': 'application/json' });
 		response.end(JSON.stringify({ 'errors': ['Can\'t use an empty avatar'] }));
@@ -182,7 +194,7 @@ function checkPassword(user, request, response) {
 			response.end(JSON.stringify({ 'errors': ['This username is reserved ;) \nEnter the password :'] }));
 			return false;
 		}
-        // Wrong password
+		// Wrong password
 		else if (request.body.password != "e86eb3868e5cb0e27f4822d1b30213e1") {
 			response.writeHead(403, { 'Content-type': 'application/json' });
 			response.end(JSON.stringify({ 'errors': ['Wrong password biatch !'] }));
@@ -212,9 +224,3 @@ function getUserByPropertyValue(propertyName, value) {
 		}
 	})
 };
-
-function HTMLToPlainText(string) {
-	string = string.replace(/</g, "&lt;");
-	string = string.replace(/>/g, "&gt;");
-	return string;
-}

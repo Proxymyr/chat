@@ -217,6 +217,7 @@ function getUserByPropertyValue(propertyName, value) {
 	})
 };
 
+// Convert HTML markup to plain text to avoid interpretation client-side
 function HTMLToPlainText(string) {
 	string = string.replace(/</g, "&lt;");
 	string = string.replace(/>/g, "&gt;");

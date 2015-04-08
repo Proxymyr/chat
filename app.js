@@ -97,7 +97,7 @@ io.sockets.on('connection', function (socket) {
 		users.push({ 'ip': ip, 'socket': socketId, 'username': data.username, 'avatar': data.avatar });
 		
 		// Alert all users of the connection
-		connData = { 'type': 'userConnection', 'user': { 'username': data.username, 'avatar': data.avatar }, 'time': Date.now() };
+		connData = { 'type': 'userConnection', 'user': { 'username': HTMLToPlainText(data.username), 'avatar': data.avatar }, 'time': Date.now() };
 		io.sockets.emit('message', connData);
 	});
 	
@@ -127,7 +127,7 @@ io.sockets.on('connection', function (socket) {
 
 		// Send message to all users
 		if (typeof user != 'undefined') {
-			messageData = { 'type': 'userMessage', 'user': { 'username': messageData.username, 'avatar': HTMLToPlainText(messageData.avatar) }, 'message': { 'content': HTMLToPlainText(messageData.content), 'time': messageData.time } };
+			messageData = { 'type': 'userMessage', 'user': { 'username': HTMLToPlainText(messageData.username), 'avatar': HTMLToPlainText(messageData.avatar) }, 'message': { 'content': HTMLToPlainText(messageData.content), 'time': messageData.time } };
 			io.sockets.emit('message', messageData);
 		}
 	});

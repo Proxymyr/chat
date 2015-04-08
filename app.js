@@ -36,18 +36,19 @@ var users = new Array();
 //======= Urls Handling =======
 //=============================
 
+// GET /
 app.get("/", function (req, res) {
 	res.render('index');
 });
 
+// GET /nsa
 app.get('/nsa', function (req, res) {
 	res.render('nsa');
 });
 
+// PUT /api/user/MyUsername
 app.put('/api/user/:username', function (req, res) {
 	var oldUsername = req.params.username;
-	var newUsername = HTMLToPlainText(req.body.username);
-	var isNewUsername = oldUsername != newUsername;
 	var user = getUserByPropertyValue('username', oldUsername)[0];
 	
 	if (!checkUserConnection(user, req, res)) return;
@@ -55,6 +56,9 @@ app.put('/api/user/:username', function (req, res) {
 	if (!checkUserData(req, res)) return;
 	
 	if (isNewUsername && !checkPassword(user, req, res)) return;
+	
+	var newUsername = HTMLToPlainText(req.body.username);
+	var isNewUsername = oldUsername != newUsername;
 	
 	// All checks passed, change the user's data
 	var oldAvatar = user.avatar;
@@ -75,8 +79,9 @@ logger.debug("Overriding 'Express' logger");
 app.use(morgan("default", { "stream": logger.stream }));
 
 // Avoid leaking stacktrace to user
-app.use(function(err, req, res) {
-    logger.error('error %s', err.message);
+app.use(function(err, req, res, next) {
+	logger.error('ERROR', err.stack);
+	next();
 });
 
 // This handler is a catch-all for 404 errors
@@ -97,6 +102,8 @@ io.sockets.on('connection', function (socket) {
 	// User first connection
 	socket.on('userConnect', function (data) {
 		
+		logger.info('CONNECT', data);
+
 		// Store user data
 		users.push({ 'ip': ip, 'socket': socketId, 'username': data.username, 'avatar': data.avatar });
 		
@@ -110,7 +117,7 @@ io.sockets.on('connection', function (socket) {
 		
 		var user = getUserByPropertyValue('socket', socketId)[0];
 		
-		if (typeof user != 'undefined') {
+		if (user !== undefined) {
 			var oldUsername = user.username;
 			var oldAvatar = user.avatar;
 			
@@ -127,10 +134,15 @@ io.sockets.on('connection', function (socket) {
 		
 		var user = getUserByPropertyValue('socket', socketId)[0];
 
-        logger.info('message %s', messageData);
+		logger.info('MESSAGE', messageData);
+		
+		if (user.username != HTMLToPlainText(messageData.username) && user.username != "Vega" && user.username != "Poxymyr") {
+			socket.emit('message', { 'type': 'sysMessage', 'message': 'Can\'t use this function without rights' });
+			return;
+		}
 
 		// Send message to all users
-		if (typeof user != 'undefined') {
+		if (user !== undefined) {
 			messageData = { 'type': 'userMessage', 'user': { 'username': HTMLToPlainText(messageData.username), 'avatar': HTMLToPlainText(messageData.avatar) }, 'message': { 'content': HTMLToPlainText(messageData.content), 'time': messageData.time } };
 			io.sockets.emit('message', messageData);
 		}
@@ -144,7 +156,7 @@ io.sockets.on('connection', function (socket) {
 // Check the user identity based on ip and username
 function checkUserConnection(user, request, response) {
 	// Username not found in list
-	if (typeof user == 'undefined') {
+	if (user === undefined) {
 		response.writeHead(404, { 'Content-type': 'application/json' });
 		response.end(JSON.stringify({ 'errors': ['Username not found'] }));
 		return false;
@@ -162,13 +174,13 @@ function checkUserConnection(user, request, response) {
 // Check the user's name and avatar
 function checkUserData(request, response) {
 	// Empty username
-	if (typeof request.body.username == 'undefined' || request.body.username.isEmptyOrWhitespace()) {
+	if (request.body.username === undefined || request.body.username == null || request.body.username.isEmptyOrWhitespace()) {
 		response.writeHead(400, { 'Content-type': 'application/json' });
 		response.end(JSON.stringify({ 'errors': ['Can\'t use an empty username'] }));
 		return false;
 	}
     // Empty avatar
-	else if (typeof request.body.avatar == 'undefined' || request.body.avatar.isEmptyOrWhitespace()) {
+	else if (request.body.avatar === undefined || request.body.avatar == null || request.body.avatar.isEmptyOrWhitespace()) {
 		response.writeHead(400, { 'Content-type': 'application/json' });
 		response.end(JSON.stringify({ 'errors': ['Can\'t use an empty avatar'] }));
 		return false;
@@ -181,7 +193,7 @@ function checkUserData(request, response) {
 function checkPassword(user, request, response) {
 	if (request.body.username == "Vega" || request.body.username == "Poxymyr") {
 		// No password
-		if (typeof request.body.password == 'undefined' || request.body.password.isEmptyOrWhitespace()) {
+		if (request.body.password === undefined || request.body.password.isEmptyOrWhitespace()) {
 			response.writeHead(403, { 'Content-type': 'application/json' });
 			response.end(JSON.stringify({ 'errors': ['This username is reserved ;) \nEnter the password :'] }));
 			return false;

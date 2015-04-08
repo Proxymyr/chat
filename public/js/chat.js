@@ -124,6 +124,11 @@ socket.on('message', function (message) {
 		case 'userMessage':
 			displayMessage(message.user, message.message);
 			break;
+
+		case 'sysMessage':
+			console.log("TEST");
+			alert(message.message);
+			break;
 	}
 });
 
@@ -143,19 +148,33 @@ function send() {
 	if (content.startsWith("http://www.reactiongifs.com/")) {
 		content = ".reac." + content.substr("http://www.reactiongifs.com/".length, content.length);
 	}
+	// Parse for commands
+	else if (content == "/nsa") {
+		sendFreedom();
+		clearForm();
+		return;
+	}
+	else if (content == "/lenny") {
+		content = "( ͡° ͜ʖ ͡°)";
+	}
 	
 	// Create message data and send it
 	var data = { 'username': username, 'avatar': avatar, 'content': content, 'time' : time };
 	sendMessage(data);
+
+	clearForm();
+}
+
+function sendMessage(data) {
+	socket.emit('userMessage', data);
+}
+
+function clearForm() {
 	document.getElementById("message").value = "";
 	
 	// Disable send button to limit spam
 	document.getElementById('submit').disabled = true;
 	setTimeout(function () { document.getElementById('submit').disabled = false; }, 500);
-}
-
-function sendMessage(data) {
-	socket.emit('userMessage', data);
 }
 
 //=============================
@@ -165,11 +184,7 @@ function sendMessage(data) {
 // Display a message
 function displayMessage(user, message) {
 	var date = new Date(message.time);
-	
-	if (message.content == "/lenny") {
-		content = "( ͡° ͜ʖ ͡°)";
-	}
-	
+
 	var splitted = message.content.split(".");
 	switch (splitted[1]) {
 		case "reac":

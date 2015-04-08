@@ -126,7 +126,6 @@ socket.on('message', function (message) {
 			break;
 
 		case 'sysMessage':
-			console.log("TEST");
 			alert(message.message);
 			break;
 	}

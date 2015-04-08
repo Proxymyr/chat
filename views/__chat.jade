@@ -1,4 +1,6 @@
-﻿#chatContainer
+﻿a#githubLink(href="https://github.com/Poxymyr/chat" target="_blank")
+	img(src="/public/images/icon.png")
+#chatContainer
 	#command
 		button(type='button', onclick='setAvatar()') Change avatar
 		form(onsubmit='send();return false;')
@@ -6,8 +8,6 @@
 			button#submit(type='submit') Send
 		button(type='button', onclick='setUsername()') Change username
 	#chat
-a#githubLink(href="https://github.com/Poxymyr/chat" target="_blank")
-	img(src="/public/images/icon.png")
 
 link(rel='stylesheet', type='text/css', href='node_modules/normalize.css/normalize.css')
 link(rel='stylesheet', type='text/css', href='public/css/chat.css')

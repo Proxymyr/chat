@@ -46,7 +46,8 @@ app.get('/nsa', function (req, res) {
 
 app.put('/api/user/:username', function (req, res) {
 	var oldUsername = req.params.username;
-	var isNewUsername = oldUsername != req.body.username;
+	var newUsername = HTMLToPlainText(req.body.username);
+	var isNewUsername = oldUsername != newUsername;
 	var user = getUserByPropertyValue('username', oldUsername)[0];
 	
 	if (!checkUserConnection(user, req, res)) return;
@@ -57,9 +58,10 @@ app.put('/api/user/:username', function (req, res) {
 	
 	// All checks passed, change the user's data
 	var oldAvatar = user.avatar;
+	var newAvatar = HTMLToPlainText(req.body.avatar);
 	
-	user.username = req.body.username;
-	user.avatar = req.body.avatar;
+	user.username = newUsername;
+	user.avatar = newAvatar;
 	
 	res.writeHead(200, { 'Content-type': 'application/json' });
 	res.end(JSON.stringify({ 'oldUsername': oldUsername, 'newUsername': user.username, 'oldAvatar': oldAvatar, 'newAvatar': user.avatar }));
@@ -125,7 +127,7 @@ io.sockets.on('connection', function (socket) {
 
 		// Send message to all users
 		if (typeof user != 'undefined') {
-			messageData = { 'type': 'userMessage', 'user': { 'username': messageData.username, 'avatar': messageData.avatar }, 'message': { 'content': messageData.content, 'time': messageData.time } };
+			messageData = { 'type': 'userMessage', 'user': { 'username': messageData.username, 'avatar': messageData.avatar }, 'message': { 'content': HTMLToPlainText(messageData.content), 'time': messageData.time } };
 			io.sockets.emit('message', messageData);
 		}
 	});
@@ -210,3 +212,9 @@ function getUserByPropertyValue(propertyName, value) {
 		}
 	})
 };
+
+function HTMLToPlainText(string) {
+	string = string.replace('<', "&lt;");
+	string = string.replace('>', "&gt;");
+	return string;
+}

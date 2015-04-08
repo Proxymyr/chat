@@ -64,10 +64,10 @@ app.put('/api/user/:username', function (req, res) {
 	user.avatar = newAvatar;
 	
 	res.writeHead(200, { 'Content-type': 'application/json' });
-	res.end(JSON.stringify({ 'oldUsername': oldUsername, 'newUsername': user.username, 'oldAvatar': oldAvatar, 'newAvatar': user.avatar }));
+	res.end(JSON.stringify({ 'oldUsername': oldUsername, 'newUsername': newUsername, 'oldAvatar': oldAvatar, 'newAvatar': newAvatar }));
 	
 	if (isNewUsername) {
-		io.sockets.emit('message', { 'type': 'usernameChanged', 'user': { 'oldUsername': oldUsername, 'newUsername': user.username }, 'time': Date.now() });
+		io.sockets.emit('message', { 'type': 'usernameChanged', 'user': { 'oldUsername': oldUsername, 'newUsername': newUsername }, 'time': Date.now() });
 	}
 });
 
@@ -83,6 +83,10 @@ app.use(function(err, req, res) {
 app.use(function (req, res) {
 	res.status(404).sendFile(__dirname + "/public/images/404_leo.jpg");
 });
+
+//=============================
+//========= Socket.IO =========
+//=============================
 
 io.sockets.on('connection', function (socket) {
 	
@@ -118,7 +122,7 @@ io.sockets.on('connection', function (socket) {
 		}
 	});
 	
-	// User sendind message
+	// User sending message
 	socket.on('userMessage', function (messageData) {
 		
 		var user = getUserByPropertyValue('socket', socketId)[0];

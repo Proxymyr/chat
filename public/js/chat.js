@@ -1,22 +1,4 @@
-﻿//socket.on('message', function (data) {
-//    if(data.message == "/nsa") {
-//        sendFreedom(data.username);
-//        return;
-//    }
-//    document.getElementById("chat").innerHTML = constructMessage(data.avatar, data.username, data.message, data.time) + document.getElementById("chat").innerHTML
-//});
-
-
-//=============================
-//===== Helpers Functions =====
-//=============================
-
-// Add isEmptyOrWhitespace function to String
-if (typeof String.prototype.isEmptyOrWhitespace != 'function') {
-	String.prototype.isEmptyOrWhitespace = function () {
-		return this === null || this.match(/^ *$/) !== null;
-	}
-}
+﻿document.addEventListener('visibilitychange', clearNotifications());
 
 //=======================================
 //===== Connection & User Functions =====
@@ -121,8 +103,13 @@ socket.on('message', function (message) {
 			displayUsernameChange(message.user, message.time);
 			break;
 
+		case 'ownMessage':
+			displayMessage(message.user, message.message);
+			break;
+
 		case 'userMessage':
 			displayMessage(message.user, message.message);
+			notify();
 			break;
 
 		case 'sysMessage':
@@ -160,7 +147,7 @@ function send() {
 	// Create message data and send it
 	var data = { 'username': username, 'avatar': avatar, 'content': content, 'time' : time };
 	sendMessage(data);
-
+	
 	clearForm();
 }
 
@@ -183,14 +170,13 @@ function clearForm() {
 // Display a message
 function displayMessage(user, message) {
 	var date = new Date(message.time);
-
+	
 	var splitted = message.content.split(".");
 	switch (splitted[1]) {
 		case "reac":
 			message.content = "<a href='http://www.reactiongifs.com/" + splitted[2] + ".gif' target='_blank'><img src='http://www.reactiongifs.com/" + splitted[2] + ".gif' /></a>"
 			break;
 	}
-	
 	
 	/* GENERATED HTML SCHEMA
      * (need to make a template)
@@ -270,6 +256,22 @@ function displayUsernameChange(user, time) {
 	document.getElementById("chat").innerHTML = html + document.getElementById("chat").innerHTML;
 }
 
+function notify() {
+	var regex = /([0-9])/;
+	
+	if (!regex.test(document.title)) {
+		document.title = '(1) ' + document.title;
+	}
+}
+
+function clearNotifications() {
+	var regex = /([0-9])/;
+	
+	if (document.visibilityState == 'visible' && regex.test(document.title)) {
+		document.title = document.title.substr(4, 100);
+	}
+}
+
 //=============================
 //====== Chat Commands ========
 //=============================
@@ -280,3 +282,41 @@ function eraseMessage(context) {
 	var html = '<div><span class=\'messageContent\'><dfn>"Message Deleted"</dfn></span></div>';
 	divnumber.innerHTML = html;
 }
+
+//=============================
+//===== Helpers Functions =====
+//=============================
+
+// Add isEmptyOrWhitespace function to String
+if (typeof String.prototype.isEmptyOrWhitespace != 'function') {
+	String.prototype.isEmptyOrWhitespace = function () {
+		return this === null || this.match(/^ *$/) !== null;
+	}
+}
+
+// Add an event handler to remove notifications when the user sees the tab
+// FROM : https://developer.mozilla.org/en-US/docs/Web/Guide/User_experience/Using_the_Page_Visibility_API
+// Set the name of the hidden property and the change event for visibility
+(function () {
+	var hidden, visibilityChange;
+	if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
+		hidden = "hidden";
+		visibilityChange = "visibilitychange";
+	} else if (typeof document.mozHidden !== "undefined") {
+		hidden = "mozHidden";
+		visibilityChange = "mozvisibilitychange";
+	} else if (typeof document.msHidden !== "undefined") {
+		hidden = "msHidden";
+		visibilityChange = "msvisibilitychange";
+	} else if (typeof document.webkitHidden !== "undefined") {
+		hidden = "webkitHidden";
+		visibilityChange = "webkitvisibilitychange";
+	}
+	
+	// Works only on browsers supporting Page Visibility API
+	if (!(typeof document.addEventListener === "undefined" || 
+		typeof document[hidden] === "undefined")) {
+		// Handle page visibility change   
+		document.addEventListener(visibilityChange, clearNotifications);
+	}
+})();

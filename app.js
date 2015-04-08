@@ -144,7 +144,10 @@ io.sockets.on('connection', function (socket) {
 		// Send message to all users
 		if (user !== undefined) {
 			messageData = { 'type': 'userMessage', 'user': { 'username': HTMLToPlainText(messageData.username), 'avatar': HTMLToPlainText(messageData.avatar) }, 'message': { 'content': HTMLToPlainText(messageData.content), 'time': messageData.time } };
-			io.sockets.emit('message', messageData);
+			socket.broadcast.emit('message', messageData);
+			
+			messageData.type = 'ownMessage';
+			socket.emit('message', messageData);
 		}
 	});
 });

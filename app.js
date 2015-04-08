@@ -214,7 +214,7 @@ function getUserByPropertyValue(propertyName, value) {
 };
 
 function HTMLToPlainText(string) {
-	string = string.replace('<', "&lt;");
-	string = string.replace('>', "&gt;");
+	string = string.replace(/</g, "&lt;");
+	string = string.replace(/>/g, "&gt;");
 	return string;
 }

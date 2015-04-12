@@ -6,6 +6,7 @@ var path = require('path');
 var express = require("express");
 var socket = require("socket.io");
 var bodyParser = require("body-parser");
+var userModel = require("./database.js").User;
 
 // Loggers files
 var morgan = require("morgan");
@@ -106,6 +107,13 @@ io.sockets.on('connection', function (socket) {
 
 		// Store user data
 		users.push({ 'ip': ip, 'socket': socketId, 'username': data.username, 'avatar': data.avatar });
+		var newUser = new userModel( {
+			username: data.username,
+			avatar: data.avatar,
+			level: 'user',
+			password: ''
+		});
+		newUser.save();
 		
 		// Alert all users of the connection
 		connData = { 'type': 'userConnection', 'user': { 'username': HTMLToPlainText(data.username), 'avatar': data.avatar }, 'time': Date.now() };

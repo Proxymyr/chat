@@ -1,4 +1,42 @@
-﻿document.addEventListener('visibilitychange', clearNotifications());
+﻿//=============================
+//===== Helpers Functions =====
+//=============================
+
+// Add isEmptyOrWhitespace function to String
+if (typeof String.prototype.isEmptyOrWhitespace != 'function') {
+	String.prototype.isEmptyOrWhitespace = function () {
+		return this === null || this.match(/^ *$/) !== null;
+	}
+}
+
+// Add an event handler to remove notifications when the user sees the tab
+// FROM : https://developer.mozilla.org/en-US/docs/Web/Guide/User_experience/Using_the_Page_Visibility_API
+// Set the name of the hidden property and the change event for visibility
+(function () {
+	var hidden, visibilityChange;
+	if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
+		hidden = "hidden";
+		visibilityChange = "visibilitychange";
+	} else if (typeof document.mozHidden !== "undefined") {
+		hidden = "mozHidden";
+		visibilityChange = "mozvisibilitychange";
+	} else if (typeof document.msHidden !== "undefined") {
+		hidden = "msHidden";
+		visibilityChange = "msvisibilitychange";
+	} else if (typeof document.webkitHidden !== "undefined") {
+		hidden = "webkitHidden";
+		visibilityChange = "webkitvisibilitychange";
+	}
+	
+	// Works only on browsers supporting Page Visibility API
+	if (!(typeof document.addEventListener === "undefined" || 
+		typeof document[hidden] === "undefined")) {
+		// Handle page visibility change   
+		document.addEventListener(visibilityChange, clearNotifications);
+	}
+})();
+
+document.addEventListener('visibilitychange', clearNotifications());
 
 //=======================================
 //===== Connection & User Functions =====
@@ -13,9 +51,8 @@ var avatar = '/public/images/nico_yds.jpg';
 
 if (localStorage.getItem("avatar") != null && localStorage.getItem("username") != null) {
 	username = localStorage.getItem("username");
-	avatar = localStorage.getItem("avatar");
 	
-	socket.emit('userConnect', { 'username': username, 'avatar': avatar });
+	socket.emit('userConnect', { 'username': username });
 }
 else {
 	connect();
@@ -25,21 +62,16 @@ else {
 function connect() {
 	// Connect to the chat server and set username and avatar
 	username = prompt("Enter your username", "I suck");
-	avatar = prompt("Enter your avatar's url", "/public/images/nico_yds.jpg");
 	
 	if (username.isEmptyOrWhitespace()) {
 		username = "I suck";
-	}
-	
-	if (avatar.isEmptyOrWhitespace()) {
-		avatar = "/public/images/nico_yds.jpg";
 	}
 	
 	localStorage.setItem("username", username);
 	localStorage.setItem("avatar", avatar);
 	
 	// TODO Passez en POST
-	socket.emit('userConnect', { 'username': username, 'avatar': avatar });
+	socket.emit('userConnect', { 'username': username });
 }
 
 // Change user's name
@@ -282,41 +314,3 @@ function eraseMessage(context) {
 	var html = '<div><span class=\'messageContent\'><dfn>"Message Deleted"</dfn></span></div>';
 	divnumber.innerHTML = html;
 }
-
-//=============================
-//===== Helpers Functions =====
-//=============================
-
-// Add isEmptyOrWhitespace function to String
-if (typeof String.prototype.isEmptyOrWhitespace != 'function') {
-	String.prototype.isEmptyOrWhitespace = function () {
-		return this === null || this.match(/^ *$/) !== null;
-	}
-}
-
-// Add an event handler to remove notifications when the user sees the tab
-// FROM : https://developer.mozilla.org/en-US/docs/Web/Guide/User_experience/Using_the_Page_Visibility_API
-// Set the name of the hidden property and the change event for visibility
-(function () {
-	var hidden, visibilityChange;
-	if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support 
-		hidden = "hidden";
-		visibilityChange = "visibilitychange";
-	} else if (typeof document.mozHidden !== "undefined") {
-		hidden = "mozHidden";
-		visibilityChange = "mozvisibilitychange";
-	} else if (typeof document.msHidden !== "undefined") {
-		hidden = "msHidden";
-		visibilityChange = "msvisibilitychange";
-	} else if (typeof document.webkitHidden !== "undefined") {
-		hidden = "webkitHidden";
-		visibilityChange = "webkitvisibilitychange";
-	}
-	
-	// Works only on browsers supporting Page Visibility API
-	if (!(typeof document.addEventListener === "undefined" || 
-		typeof document[hidden] === "undefined")) {
-		// Handle page visibility change   
-		document.addEventListener(visibilityChange, clearNotifications);
-	}
-})();

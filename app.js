@@ -77,10 +77,10 @@ app.put('/api/user/:username', function (req, res) {
 });
 
 logger.debug("Overriding 'Express' logger");
-app.use(morgan("default", { "stream": logger.stream }));
+app.use(morgan("combined", { "stream": logger.stream }));
 
 // Avoid leaking stacktrace to user
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
 	logger.error('ERROR', err.stack);
 	next();
 });
@@ -103,21 +103,34 @@ io.sockets.on('connection', function (socket) {
 	// User first connection
 	socket.on('userConnect', function (data) {
 		
-		logger.info('CONNECT', data);
-
-		// Store user data
-		users.push({ 'ip': ip, 'socket': socketId, 'username': data.username, 'avatar': data.avatar });
-		var newUser = new userModel( {
-			username: data.username,
-			avatar: data.avatar,
-			level: 'user',
-			password: ''
-		});
-		newUser.save();
+		var userAvatar = '/public/images/nico_yds.jpg';
 		
-		// Alert all users of the connection
-		connData = { 'type': 'userConnection', 'user': { 'username': HTMLToPlainText(data.username), 'avatar': data.avatar }, 'time': Date.now() };
-		io.sockets.emit('message', connData);
+		// Get user from database with its username	
+		userModel.findOne({ username: data.username }).exec(function (err, foundUser) {
+			
+			// Add the user to the database if it doesn't exists
+			if (foundUser == null) {
+				foundUser = new userModel({
+					username: data.username,
+					avatar: userAvatar,
+					level: 'user',
+					password: ''
+				});
+				foundUser.save();
+				
+				logger.info('USER CREATED', data.username);
+			}
+			
+			// Store user data
+			var user = { 'ip': ip, 'socket': socketId, 'username': data.username, 'avatar': foundUser.avatar };
+			users.push(user);
+			
+			logger.info('CONNECT', user);
+			
+			// Alert all users of the connection
+			connData = { 'type': 'userConnection', 'user': { 'username': HTMLToPlainText(user.username), 'avatar': user.avatar }, 'time': Date.now() };
+			io.sockets.emit('message', connData);
+		});
 	});
 	
 	// User disconnection
@@ -141,14 +154,14 @@ io.sockets.on('connection', function (socket) {
 	socket.on('userMessage', function (messageData) {
 		
 		var user = getUserByPropertyValue('socket', socketId)[0];
-
+		
 		logger.info('MESSAGE', messageData);
 		
 		if (user.username != HTMLToPlainText(messageData.username) && user.username != "Vega" && user.username != "Poxymyr") {
 			socket.emit('message', { 'type': 'sysMessage', 'message': 'Can\'t use this function without rights' });
 			return;
 		}
-
+		
 		// Send message to all users
 		if (user !== undefined) {
 			messageData = { 'type': 'userMessage', 'user': { 'username': HTMLToPlainText(messageData.username), 'avatar': HTMLToPlainText(messageData.avatar) }, 'message': { 'content': HTMLToPlainText(messageData.content), 'time': messageData.time } };

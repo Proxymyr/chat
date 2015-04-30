@@ -83,3 +83,6 @@ node_modules
 # DLL and debug files
 /bin
 /obj
+
+# Visual Studio Code settings
+/.settings

@@ -6,6 +6,7 @@ var path = require('path');
 var express = require("express");
 var socket = require("socket.io");
 var bodyParser = require("body-parser");
+var entities = require("entities");
 
 // Loggers files
 var morgan = require("morgan");
@@ -57,12 +58,12 @@ app.put('/api/user/:username', function (req, res) {
 	
 	if (isNewUsername && !checkPassword(user, req, res)) return;
 	
-	var newUsername = HTMLToPlainText(req.body.username);
+	var newUsername = entities.encodeHTML(req.body.username);
 	var isNewUsername = oldUsername != newUsername;
 	
 	// All checks passed, change the user's data
 	var oldAvatar = user.avatar;
-	var newAvatar = HTMLToPlainText(req.body.avatar);
+	var newAvatar = entities.encodeHTML(req.body.avatar);
 	
 	user.username = newUsername;
 	user.avatar = newAvatar;
@@ -107,8 +108,11 @@ io.sockets.on('connection', function (socket) {
 		// Store user data
 		users.push({ 'ip': ip, 'socket': socketId, 'username': data.username, 'avatar': data.avatar });
 		
+		data.username = entities.encodeHTML(data.username);
+		data.avatar = entities.encodeHTML(data.avatar);
+		
 		// Alert all users of the connection
-		connData = { 'type': 'userConnection', 'user': { 'username': HTMLToPlainText(data.username), 'avatar': data.avatar }, 'time': Date.now() };
+		var connData = { 'type': 'userConnection', 'user': { 'username': data.username, 'avatar': data.avatar }, 'time': Date.now() };
 		io.sockets.emit('message', connData);
 	});
 	
@@ -122,9 +126,12 @@ io.sockets.on('connection', function (socket) {
 			var oldAvatar = user.avatar;
 			
 			users.splice(users.indexOf(user), 1);
-			
+
+			oldUsername = entities.encodeHTML(oldUsername);
+			oldAvatar = entities.encodeHTML(oldAvatar);
+
 			// Alert all users of the disconnection
-			disconnData = { 'type': 'userDisconnection', 'user': { 'username': oldUsername, 'avatar': oldAvatar }, 'time': Date.now() };
+			var disconnData = { 'type': 'userDisconnection', 'user': { 'username': oldUsername, 'avatar': oldAvatar }, 'time': Date.now() };
 			socket.broadcast.emit('message', disconnData);
 		}
 	});
@@ -136,14 +143,19 @@ io.sockets.on('connection', function (socket) {
 
 		logger.info('MESSAGE', messageData);
 		
-		if (user.username != HTMLToPlainText(messageData.username) && user.username != "Vega" && user.username != "Poxymyr") {
+		if (user.username != entities.encodeHTML(messageData.username) && user.username != "Vega" && user.username != "Poxymyr") {
 			socket.emit('message', { 'type': 'sysMessage', 'message': 'Can\'t use this function without rights' });
 			return;
 		}
 
 		// Send message to all users
 		if (user !== undefined) {
-			messageData = { 'type': 'userMessage', 'user': { 'username': HTMLToPlainText(messageData.username), 'avatar': HTMLToPlainText(messageData.avatar) }, 'message': { 'content': HTMLToPlainText(messageData.content), 'time': messageData.time } };
+			messageData.username = entities.encodeHTML(messageData.username);
+			messageData.avatar = entities.encodeHTML(messageData.avatar);
+			messageData.content = entities.encodeHTML(messageData.content);
+			messageData.time = new Date(messageData.time);
+			
+			messageData = { 'type': 'userMessage', 'user': { 'username': messageData.username, 'avatar': messageData.avatar }, 'message': { 'content': messageData.content, 'time': messageData.time } };
 			socket.broadcast.emit('message', messageData);
 			
 			messageData.type = 'ownMessage';
@@ -164,7 +176,7 @@ function checkUserConnection(user, request, response) {
 		response.end(JSON.stringify({ 'errors': ['Username not found'] }));
 		return false;
 	}
-    // Sender ip is not user's ip
+	// Sender ip is not user's ip
 	else if (user.ip != request.connection.remoteAddress) {
 		response.writeHead(403, { 'Content-type': 'application/json' });
 		response.end(JSON.stringify({ 'errors': ['No rights to change user\'s data'] }));
@@ -201,7 +213,7 @@ function checkPassword(user, request, response) {
 			response.end(JSON.stringify({ 'errors': ['This username is reserved ;) \nEnter the password :'] }));
 			return false;
 		}
-        // Wrong password
+		// Wrong password
 		else if (request.body.password != "e86eb3868e5cb0e27f4822d1b30213e1") {
 			response.writeHead(403, { 'Content-type': 'application/json' });
 			response.end(JSON.stringify({ 'errors': ['Wrong password biatch !'] }));
@@ -220,7 +232,7 @@ function checkPassword(user, request, response) {
 if (typeof String.prototype.isEmptyOrWhitespace != 'function') {
 	String.prototype.isEmptyOrWhitespace = function () {
 		return this === null || this.match(/^ *$/) !== null;
-	}
+	};
 }
 
 // Filter users in the list by a property
@@ -229,12 +241,5 @@ function getUserByPropertyValue(propertyName, value) {
 		if (value[propertyName] === value[propertyName]) {
 			return value;
 		}
-	})
-};
-
-// Convert HTML markup to plain text to avoid interpretation client-side
-function HTMLToPlainText(string) {
-	string = string.replace(/</g, "&lt;");
-	string = string.replace(/>/g, "&gt;");
-	return string;
+	});
 }

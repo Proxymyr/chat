@@ -1,11 +1,15 @@
-﻿#chatContainer
-    form(onsubmit='send();return false;')
-        input#message(type='textbox')
-        button#submit(type='submit') Send
-    button(type='button', onclick='setAvatar()') Change avatar
-    button(type='button', onclick='setUsername()') Change username
-    #chat
+﻿a#githubLink(href="https://github.com/Poxymyr/chat" target="_blank")
+	img(src="/public/images/icon.png")
+#chatContainer
+	#command
+		button(type='button', onclick='setAvatar()') Change avatar
+		form(onsubmit='send();return false;')
+			input#message(type='textbox')
+			button#submit(type='submit') Send
+		button(type='button', onclick='setUsername()') Change username
+	#chat
 
+link(rel='stylesheet', type='text/css', href='node_modules/normalize.css/normalize.css')
 link(rel='stylesheet', type='text/css', href='public/css/chat.css')
 script(src='http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js')
 script(src='/socket.io/socket.io.js')

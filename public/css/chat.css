@@ -1,4 +1,45 @@
-﻿.avatar {
+﻿#githubLink {
+    position: fixed;
+    right: 3%;
+    top: 1%;
+}
+
+#githubLink img:hover {
+    opacity: 0.5;
+}
+
+#command {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #e1e1ff;
+    margin: 0px;
+    z-index: 1;
+}
+
+#command * {
+    display: inline;
+    text-align: center;
+}
+
+#command form {
+}
+
+#command form input {
+    width: 50%;
+}
+
+#chat {
+    padding-left: 1%;
+    padding-right: 1%; 
+    position: relative;
+    overflow: auto;
+
+}
+
+.avatar {
     height: 50px;
     width: 50px;
     float: left;
